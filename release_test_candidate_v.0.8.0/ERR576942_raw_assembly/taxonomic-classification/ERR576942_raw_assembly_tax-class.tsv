@@ -1,0 +1,26 @@
+contig	prediction_value	predicted_organism_name
+NODE_105_length_1821_cov_1_597395	0	no match found 
+NODE_109_length_1766_cov_2_044418	0	no match found 
+NODE_118_length_1700_cov_10_451672	0	no match found 
+NODE_119_length_1684_cov_1_712707	0	no match found 
+NODE_11_length_41715_cov_18657_411858	1.00	gi|169658842|dbj|AB426868.1|__Enterobacteria__phage__P22__DNA,__complete__genome,__strain:__ATCC__19585-B1 
+NODE_127_length_1634_cov_1_733376	0	no match found 
+NODE_12_length_39183_cov_1357_905847	0.87	gi|265524965|gb|GU071091.1|__Enterobacteria__phage__T7,__complete__genome 
+NODE_13_length_37379_cov_1576_279927	0.97	gi|505831697|gb|KC960671.1|__Enterobacteria__phage__T3,__complete__genome 
+NODE_16_length_16355_cov_113_763374	0	no match found 
+NODE_34_length_6261_cov_4_855301	0	no match found 
+NODE_37_length_5823_cov_2_430825	0	no match found 
+NODE_39_length_5441_cov_625_501671	1.00	gi|764044028|gb|CP004084.1|__Enterobacteria__phage__phiX174,__complete__genome 
+NODE_40_length_5190_cov_5_368257	0	no match found 
+NODE_41_length_4649_cov_4_702438	0	no match found 
+NODE_48_length_3852_cov_2_065315	0	no match found 
+NODE_49_length_3829_cov_29_572337	0	no match found 
+NODE_56_length_3350_cov_4_081942	0	no match found 
+NODE_5_length_109309_cov_6_572739	0.31	mge:2095.1 Salmonella typhimurium LT2, complete genome. 
+NODE_6_length_86525_cov_1211_196588	0	no match found 
+NODE_7_length_63443_cov_7_780779	0.20	mge:2477.1 Salmonella enterica subsp. enterica serovar Choleraesuis str. SC-B67, complete genome. 
+NODE_80_length_2230_cov_1_871724	0	no match found 
+NODE_85_length_2099_cov_2_048924	0	no match found 
+NODE_87_length_2059_cov_11_545908	0	no match found 
+NODE_96_length_1911_cov_2_161638	0	no match found 
+NODE_99_length_1906_cov_10_875743	0	no match found 

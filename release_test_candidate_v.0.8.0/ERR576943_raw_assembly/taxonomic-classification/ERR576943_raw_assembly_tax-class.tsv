@@ -1,0 +1,33 @@
+contig	prediction_value	predicted_organism_name
+NODE_104_length_1875_cov_3_075275	0	no match found 
+NODE_105_length_1852_cov_1_846411	0	no match found 
+NODE_10_length_41715_cov_19114_961570	1.00	gi|169658842|dbj|AB426868.1|__Enterobacteria__phage__P22__DNA,__complete__genome,__strain:__ATCC__19585-B1 
+NODE_112_length_1792_cov_6_251007	0	no match found 
+NODE_114_length_1755_cov_12_361765	0	no match found 
+NODE_117_length_1738_cov_1_994058	0	no match found 
+NODE_121_length_1703_cov_1_655947	0	no match found 
+NODE_123_length_1700_cov_11_323404	0	no match found 
+NODE_124_length_1676_cov_5_787785	0	no match found 
+NODE_128_length_1641_cov_2_025851	0	no match found 
+NODE_12_length_39183_cov_1419_559216	0.86	gi|265524965|gb|GU071091.1|__Enterobacteria__phage__T7,__complete__genome 
+NODE_130_length_1638_cov_1_633607	0	no match found 
+NODE_13_length_37379_cov_1634_560444	0.98	gi|505831697|gb|KC960671.1|__Enterobacteria__phage__T3,__complete__genome 
+NODE_140_length_1519_cov_1_418716	0	no match found 
+NODE_142_length_1500_cov_2_953633	0	no match found 
+NODE_17_length_16354_cov_105_918277	0	no match found 
+NODE_19_length_12673_cov_4_947060	0	no match found 
+NODE_31_length_5441_cov_963_898440	1.00	gi|764044028|gb|CP004084.1|__Enterobacteria__phage__phiX174,__complete__genome 
+NODE_3_length_109309_cov_6_864051	0.31	mge:2095.1 Salmonella typhimurium LT2, complete genome. 
+NODE_42_length_4005_cov_36_114177	0	no match found 
+NODE_45_length_3793_cov_7_104601	0	no match found 
+NODE_46_length_3739_cov_2_418838	0	no match found 
+NODE_4_length_86579_cov_1360_818721	0	no match found 
+NODE_53_length_3250_cov_3_454147	0	no match found 
+NODE_55_length_3172_cov_2_512031	0	no match found 
+NODE_62_length_2701_cov_2_069539	0	no match found 
+NODE_63_length_2694_cov_2_438424	0	no match found 
+NODE_66_length_2640_cov_2_577176	0	no match found 
+NODE_69_length_2582_cov_4_122279	0	no match found 
+NODE_6_length_63443_cov_8_249543	0.20	mge:2477.1 Salmonella enterica subsp. enterica serovar Choleraesuis str. SC-B67, complete genome. 
+NODE_82_length_2198_cov_1_818945	0	no match found 
+NODE_83_length_2127_cov_1_452220	0	no match found 
