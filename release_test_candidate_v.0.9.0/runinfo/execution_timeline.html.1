@@ -1,0 +1,381 @@
+<!doctype html>
+<!--
+  ~ Copyright 2013-2019, Centre for Genomic Regulation (CRG)
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<html>
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<script type="text/javascript">
+var prot = (("https:" == document.location.protocol) ? "https://" : "http://");
+document.write(unescape("%3Cscript src='" + prot + "code.jquery.com/jquery-latest.min.js' type='text/javascript' %3E%3C/script%3E"));
+document.write(unescape("%3Cscript src='" + prot + "d3js.org/d3.v3.min.js' charset='utf-8' type='text/javascript' %3E%3C/script%3E"));
+document.write(unescape("%3Cscript src='" + prot + "cdn.rawgit.com/nextflow-io/d3-timeline/82622c4cc35bac7283b3a317826b0709ac1ae476/src/d3-timeline.js' type='text/javascript' %3E%3C/script%3E"));
+</script>
+<style type="text/css">
+* {
+  font-family: 'Lato', 'Helvetica Neue', Arial, Helvetica, sans-serif;
+}
+
+.axis path,
+.axis line {
+fill: none;
+  stroke: black;
+  shape-rendering: crispEdges;
+}
+
+.axis text {
+  font-size: 10px;
+}
+
+div#timeline g text {
+  font-size: 13px;
+}
+
+text.timeline-label {
+  font-size: 13px;
+}
+
+#timeline2 .axis {
+  transform: translate(0px,30px);
+  -ms-transform: translate(0px,30px); /* IE 9 */
+  -webkit-transform: translate(0px,30px); /* Safari and Chrome */
+  -o-transform: translate(0px,30px); /* Opera */
+  -moz-transform: translate(0px,30px); /* Firefox */
+}
+
+.coloredDiv {
+  height:20px; width:20px; float:left;
+}
+
+#footer {
+  padding-top: 3em; color: #bfbfbf; font-size: 13px;
+}
+
+#footer a:visited {
+  color: #bfbfbf;
+  text-decoration: underline;
+}
+</style>
+<script type="text/javascript">
+var handler=null;
+// see https://github.com/mbostock/d3/wiki/Ordinal-Scales#category20c
+var colors = d3.scale.category20c().domain(d3.range(0,20)).range()
+
+function c0(index) { return "#9c9c9c"; }
+function c1(index) { return "#bdbdbd"; }
+function c2(index) { return colors[index % 16]; } // <-- note: uses only the first 16 colors
+
+var elapsed="1h 2m 23s"
+var beginningMillis=1603718760234;
+var endingMillis=1603722503028;
+var data=[
+{"label": "phage_references:download_references", "times": [{"starting_time": 1603718762780, "ending_time": 1603718762856, "color":c1(0)}, {"starting_time": 1603718762856, "ending_time": 1603718772094, "color":c2(0), "label": "9.5s \/ 57.7 MB"}, {"starting_time": 1603718772094, "ending_time": 1603718772250, "color":c1(0)}]},
+{"label": "checkV_database:download_checkV_DB", "times": [{"starting_time": 1603718762790, "ending_time": 1603718762859, "color":c1(1)}, {"starting_time": 1603718762859, "ending_time": 1603719149760, "color":c2(1), "label": "6m 37s \/ 9.1 MB"}, {"starting_time": 1603719149760, "ending_time": 1603719159940, "color":c1(1)}]},
+{"label": "rvdb_database:rvdb_DB", "times": [{"starting_time": 1603718762796, "ending_time": 1603718762860, "color":c1(2)}, {"starting_time": 1603718762860, "ending_time": 1603718917216, "color":c2(2), "label": "2m 36s \/ 7.7 MB"}, {"starting_time": 1603718917216, "ending_time": 1603718919085, "color":c1(2)}]},
+{"label": "vog_database:vog_DB", "times": [{"starting_time": 1603718762801, "ending_time": 1603718762861, "color":c1(3)}, {"starting_time": 1603718762861, "ending_time": 1603718950199, "color":c2(3), "label": "3m 10s \/ 7.7 MB"}, {"starting_time": 1603718950199, "ending_time": 1603718952745, "color":c1(3)}]},
+{"label": "virsorter_database:virsorter_download_DB", "times": [{"starting_time": 1603718762805, "ending_time": 1603718762861, "color":c1(4)}, {"starting_time": 1603718762861, "ending_time": 1603719021471, "color":c2(4), "label": "4m 25s \/ 9 MB"}, {"starting_time": 1603719021471, "ending_time": 1603719027963, "color":c1(4)}]},
+{"label": "ppr_dependecies:ppr_download_dependencies", "times": [{"starting_time": 1603718762809, "ending_time": 1603718762862, "color":c1(5)}, {"starting_time": 1603718762862, "ending_time": 1603718773625, "color":c2(5), "label": "10.9s \/ 43.1 MB"}, {"starting_time": 1603718773625, "ending_time": 1603718773676, "color":c1(5)}]},
+{"label": "pvog_database:pvog_DB", "times": [{"starting_time": 1603718762813, "ending_time": 1603718762863, "color":c1(6)}, {"starting_time": 1603718762863, "ending_time": 1603718844915, "color":c2(6), "label": "1m 23s \/ 7.4 MB"}, {"starting_time": 1603718844915, "ending_time": 1603718845756, "color":c1(6)}]},
+{"label": "vibrant_database:vibrant_download_DB", "times": [{"starting_time": 1603718762829, "ending_time": 1603718762863, "color":c1(7)}, {"starting_time": 1603718762863, "ending_time": 1603719692689, "color":c2(7), "label": "15m 57s \/ 38.5 MB"}, {"starting_time": 1603719692689, "ending_time": 1603719719391, "color":c1(7)}]},
+{"label": "get_test_data:testprofile", "times": [{"starting_time": 1603718762838, "ending_time": 1603718762864, "color":c1(8)}, {"starting_time": 1603718762864, "ending_time": 1603718776574, "color":c2(8), "label": "13.8s \/ 75.5 MB"}, {"starting_time": 1603718776574, "ending_time": 1603718776635, "color":c1(8)}]},
+{"label": "vogtable_database:vogtable_DB", "times": [{"starting_time": 1603718762843, "ending_time": 1603718762865, "color":c1(9)}, {"starting_time": 1603718762865, "ending_time": 1603718768656, "color":c2(9), "label": "5.9s \/ 7.6 MB"}, {"starting_time": 1603718768656, "ending_time": 1603718768734, "color":c1(9)}]},
+{"label": "sourmash_database:sourmash_download_DB", "times": [{"starting_time": 1603718772293, "ending_time": 1603718772351, "color":c1(10)}, {"starting_time": 1603718772351, "ending_time": 1603718786621, "color":c2(10), "label": "30.7s \/ 212.6 MB"}, {"starting_time": 1603718786621, "ending_time": 1603718802956, "color":c1(10)}]},
+{"label": "identify_fasta_MSF:fasta_validation_wf:input_suffix_check (2)", "times": [{"starting_time": 1603718777644, "ending_time": 1603718777738, "color":c1(11)}, {"starting_time": 1603718777738, "ending_time": 1603718778131, "color":c2(11), "label": "8.2s \/ 3 MB"}, {"starting_time": 1603718778131, "ending_time": 1603718785837, "color":c1(11)}]},
+{"label": "identify_fasta_MSF:fasta_validation_wf:input_suffix_check (3)", "times": [{"starting_time": 1603718777656, "ending_time": 1603718777740, "color":c1(11)}, {"starting_time": 1603718777740, "ending_time": 1603718778998, "color":c2(11), "label": "8.6s \/ 4.1 MB"}, {"starting_time": 1603718778998, "ending_time": 1603718786220, "color":c1(11)}]},
+{"label": "identify_fasta_MSF:fasta_validation_wf:input_suffix_check (1)", "times": [{"starting_time": 1603718777664, "ending_time": 1603718777741, "color":c1(11)}, {"starting_time": 1603718777741, "ending_time": 1603718778113, "color":c2(11), "label": "8.2s \/ 3.8 MB"}, {"starting_time": 1603718778113, "ending_time": 1603718785846, "color":c1(11)}]},
+{"label": "identify_fasta_MSF:fasta_validation_wf:input_suffix_check (7)", "times": [{"starting_time": 1603718785845, "ending_time": 1603718785937, "color":c1(11)}, {"starting_time": 1603718785937, "ending_time": 1603718790867, "color":c2(11), "label": "6.5s \/ 4.2 MB"}, {"starting_time": 1603718790867, "ending_time": 1603718792309, "color":c1(11)}]},
+{"label": "identify_fasta_MSF:fasta_validation_wf:input_suffix_check (8)", "times": [{"starting_time": 1603718785857, "ending_time": 1603718785938, "color":c1(11)}, {"starting_time": 1603718785938, "ending_time": 1603718797737, "color":c2(11), "label": "13.3s \/ 4.2 MB"}, {"starting_time": 1603718797737, "ending_time": 1603718799196, "color":c1(11)}]},
+{"label": "identify_fasta_MSF:fasta_validation_wf:input_suffix_check (6)", "times": [{"starting_time": 1603718786224, "ending_time": 1603718786320, "color":c1(11)}, {"starting_time": 1603718786320, "ending_time": 1603718788253, "color":c2(11), "label": "3.2s \/ 3.9 MB"}, {"starting_time": 1603718788253, "ending_time": 1603718789397, "color":c1(11)}]},
+{"label": "identify_fasta_MSF:fasta_validation_wf:input_suffix_check (4)", "times": [{"starting_time": 1603718789403, "ending_time": 1603718789497, "color":c1(11)}, {"starting_time": 1603718789497, "ending_time": 1603718790958, "color":c2(11), "label": "2.7s \/ 4.3 MB"}, {"starting_time": 1603718790958, "ending_time": 1603718792092, "color":c1(11)}]},
+{"label": "identify_fasta_MSF:fasta_validation_wf:input_suffix_check (5)", "times": [{"starting_time": 1603718792097, "ending_time": 1603718792192, "color":c1(11)}, {"starting_time": 1603718792192, "ending_time": 1603718793352, "color":c2(11), "label": "2.3s \/ 4.1 MB"}, {"starting_time": 1603718793352, "ending_time": 1603718794352, "color":c1(11)}]},
+{"label": "identify_fasta_MSF:fasta_validation_wf:seqkit (1)", "times": [{"starting_time": 1603718792313, "ending_time": 1603718792409, "color":c1(12)}, {"starting_time": 1603718792409, "ending_time": 1603718792468, "color":c2(12), "label": "17.3s \/ 14.8 MB"}, {"starting_time": 1603718792468, "ending_time": 1603718809609, "color":c1(12)}]},
+{"label": "identify_fasta_MSF:fasta_validation_wf:seqkit (2)", "times": [{"starting_time": 1603718794356, "ending_time": 1603718794452, "color":c1(12)}, {"starting_time": 1603718794452, "ending_time": 1603718794512, "color":c2(12), "label": "15.2s \/ 15.8 MB"}, {"starting_time": 1603718794512, "ending_time": 1603718809523, "color":c1(12)}]},
+{"label": "identify_fasta_MSF:fasta_validation_wf:seqkit (3)", "times": [{"starting_time": 1603718799200, "ending_time": 1603718799296, "color":c1(12)}, {"starting_time": 1603718799296, "ending_time": 1603718799408, "color":c2(12), "label": "10.5s \/ 14.4 MB"}, {"starting_time": 1603718799408, "ending_time": 1603718809689, "color":c1(12)}]},
+{"label": "phage_blast_DB:phage_references_blastDB", "times": [{"starting_time": 1603718802962, "ending_time": 1603718803057, "color":c1(13)}, {"starting_time": 1603718803057, "ending_time": 1603718806600, "color":c2(13), "label": "37.4s \/ 31.7 MB"}, {"starting_time": 1603718806600, "ending_time": 1603718840381, "color":c1(13)}]},
+{"label": "identify_fasta_MSF:fasta_validation_wf:seqkit (4)", "times": [{"starting_time": 1603718809532, "ending_time": 1603718809612, "color":c1(12)}, {"starting_time": 1603718809612, "ending_time": 1603718809743, "color":c2(12), "label": "1.3s \/ 15.9 MB"}, {"starting_time": 1603718809743, "ending_time": 1603718810832, "color":c1(12)}]},
+{"label": "identify_fasta_MSF:fasta_validation_wf:seqkit (5)", "times": [{"starting_time": 1603718809613, "ending_time": 1603718809705, "color":c1(12)}, {"starting_time": 1603718809705, "ending_time": 1603718809830, "color":c2(12), "label": "1.4s \/ 15.2 MB"}, {"starting_time": 1603718809830, "ending_time": 1603718810977, "color":c1(12)}]},
+{"label": "identify_fasta_MSF:fasta_validation_wf:seqkit (6)", "times": [{"starting_time": 1603718809693, "ending_time": 1603718809788, "color":c1(12)}, {"starting_time": 1603718809788, "ending_time": 1603718810054, "color":c2(12), "label": "1.4s \/ 19.3 MB"}, {"starting_time": 1603718810054, "ending_time": 1603718811088, "color":c1(12)}]},
+{"label": "identify_fasta_MSF:fasta_validation_wf:seqkit (7)", "times": [{"starting_time": 1603718810841, "ending_time": 1603718810932, "color":c1(12)}, {"starting_time": 1603718810932, "ending_time": 1603718811009, "color":c2(12), "label": "1.1s \/ 16.6 MB"}, {"starting_time": 1603718811009, "ending_time": 1603718811949, "color":c1(12)}]},
+{"label": "identify_fasta_MSF:fasta_validation_wf:seqkit (8)", "times": [{"starting_time": 1603718810981, "ending_time": 1603718811078, "color":c1(12)}, {"starting_time": 1603718811078, "ending_time": 1603718811542, "color":c2(12), "label": "1.5s \/ 21.5 MB"}, {"starting_time": 1603718811542, "ending_time": 1603718812438, "color":c1(12)}]},
+{"label": "identify_fasta_MSF:virsorter2_wf:virsorter2 (1)", "times": [{"starting_time": 1603718811098, "ending_time": 1603718811189, "color":c1(14)}, {"starting_time": 1603718811189, "ending_time": 1603721293181, "color":c2(14), "label": "45m 6s \/ 417.6 MB"}, {"starting_time": 1603721293181, "ending_time": 1603721516988, "color":c1(14)}]},
+{"label": "identify_fasta_MSF:sourmash_wf:split_multi_fasta (1)", "times": [{"starting_time": 1603718811966, "ending_time": 1603718812050, "color":c1(15)}, {"starting_time": 1603718812050, "ending_time": 1603718812567, "color":c2(15), "label": "1.7s \/ 3 MB"}, {"starting_time": 1603718812567, "ending_time": 1603718813658, "color":c1(15)}]},
+{"label": "identify_fasta_MSF:marvel_wf:split_multi_fasta (1)", "times": [{"starting_time": 1603718812446, "ending_time": 1603718812539, "color":c1(16)}, {"starting_time": 1603718812539, "ending_time": 1603718813015, "color":c2(16), "label": "1.4s \/ 3 MB"}, {"starting_time": 1603718813015, "ending_time": 1603718813880, "color":c1(16)}]},
+{"label": "identify_fasta_MSF:virsorter2_wf:virsorter2 (2)", "times": [{"starting_time": 1603718813665, "ending_time": 1603718813758, "color":c1(14)}, {"starting_time": 1603718813758, "ending_time": 1603721289918, "color":c2(14), "label": "44m 57s \/ 413.7 MB"}, {"starting_time": 1603721289918, "ending_time": 1603721510567, "color":c1(14)}]},
+{"label": "identify_fasta_MSF:sourmash_wf:split_multi_fasta (2)", "times": [{"starting_time": 1603718813885, "ending_time": 1603718813979, "color":c1(15)}, {"starting_time": 1603718813979, "ending_time": 1603718814445, "color":c2(15), "label": "1.5s \/ 3 MB"}, {"starting_time": 1603718814445, "ending_time": 1603718815348, "color":c1(15)}]},
+{"label": "identify_fasta_MSF:marvel_wf:split_multi_fasta (2)", "times": [{"starting_time": 1603718815352, "ending_time": 1603718815448, "color":c1(16)}, {"starting_time": 1603718815448, "ending_time": 1603718815920, "color":c2(16), "label": "1.5s \/ 3 MB"}, {"starting_time": 1603718815920, "ending_time": 1603718816864, "color":c1(16)}]},
+{"label": "identify_fasta_MSF:virsorter2_wf:virsorter2 (3)", "times": [{"starting_time": 1603718816868, "ending_time": 1603718816964, "color":c1(14)}, {"starting_time": 1603718816964, "ending_time": 1603721223380, "color":c2(14), "label": "43m 44s \/ 249.9 MB"}, {"starting_time": 1603721223380, "ending_time": 1603721440696, "color":c1(14)}]},
+{"label": "identify_fasta_MSF:metaphinder_wf:metaphinder (1)", "times": [{"starting_time": 1603718840386, "ending_time": 1603718840481, "color":c1(17)}, {"starting_time": 1603718840481, "ending_time": 1603718851240, "color":c2(17), "label": "11.9s \/ 120.6 MB"}, {"starting_time": 1603718851240, "ending_time": 1603718852327, "color":c1(17)}]},
+{"label": "identify_fasta_MSF:marvel_wf:split_multi_fasta (3)", "times": [{"starting_time": 1603718845766, "ending_time": 1603718845855, "color":c1(16)}, {"starting_time": 1603718845855, "ending_time": 1603718846289, "color":c2(16), "label": "1.6s \/ 3 MB"}, {"starting_time": 1603718846289, "ending_time": 1603718847341, "color":c1(16)}]},
+{"label": "identify_fasta_MSF:sourmash_wf:split_multi_fasta (3)", "times": [{"starting_time": 1603718847348, "ending_time": 1603718847441, "color":c1(15)}, {"starting_time": 1603718847441, "ending_time": 1603718847901, "color":c2(15), "label": "1.4s \/ 3 MB"}, {"starting_time": 1603718847901, "ending_time": 1603718848714, "color":c1(15)}]},
+{"label": "identify_fasta_MSF:virsorter2_wf:virsorter2 (4)", "times": [{"starting_time": 1603718848720, "ending_time": 1603718848814, "color":c1(14)}, {"starting_time": 1603718848814, "ending_time": 1603721236382, "color":c2(14), "label": "42m 53s \/ 249.6 MB"}, {"starting_time": 1603721236382, "ending_time": 1603721421948, "color":c1(14)}]},
+{"label": "identify_fasta_MSF:virnet_wf:normalize_contig_size (1)", "times": [{"starting_time": 1603718852333, "ending_time": 1603718852428, "color":c1(18)}, {"starting_time": 1603718852428, "ending_time": 1603718852537, "color":c2(18), "label": "1.1s \/ 13.8 MB"}, {"starting_time": 1603718852537, "ending_time": 1603718853454, "color":c1(18)}]},
+{"label": "identify_fasta_MSF:deepvirfinder_wf:deepvirfinder (1)", "times": [{"starting_time": 1603718853460, "ending_time": 1603718853555, "color":c1(19)}, {"starting_time": 1603718853555, "ending_time": 1603718933044, "color":c2(19), "label": "2m 29s \/ 5.1 GB"}, {"starting_time": 1603718933044, "ending_time": 1603719002147, "color":c1(19)}]},
+{"label": "identify_fasta_MSF:marvel_wf:split_multi_fasta (4)", "times": [{"starting_time": 1603718919090, "ending_time": 1603718919186, "color":c1(16)}, {"starting_time": 1603718919186, "ending_time": 1603718919650, "color":c2(16), "label": "1.8s \/ 2.9 MB"}, {"starting_time": 1603718919650, "ending_time": 1603718920904, "color":c1(16)}]},
+{"label": "identify_fasta_MSF:sourmash_wf:split_multi_fasta (4)", "times": [{"starting_time": 1603718920910, "ending_time": 1603718921005, "color":c1(15)}, {"starting_time": 1603718921005, "ending_time": 1603718921472, "color":c2(15), "label": "1.5s \/ 3 MB"}, {"starting_time": 1603718921472, "ending_time": 1603718922450, "color":c1(15)}]},
+{"label": "identify_fasta_MSF:virsorter2_wf:virsorter2 (5)", "times": [{"starting_time": 1603718922456, "ending_time": 1603718922550, "color":c1(14)}, {"starting_time": 1603718922550, "ending_time": 1603721364634, "color":c2(14), "label": "42m 35s \/ 417.6 MB"}, {"starting_time": 1603721364634, "ending_time": 1603721476999, "color":c1(14)}]},
+{"label": "identify_fasta_MSF:sourmash_wf:split_multi_fasta (5)", "times": [{"starting_time": 1603718952751, "ending_time": 1603718952845, "color":c1(15)}, {"starting_time": 1603718952845, "ending_time": 1603718953294, "color":c2(15), "label": "2.5s \/ 3 MB"}, {"starting_time": 1603718953294, "ending_time": 1603718955275, "color":c1(15)}]},
+{"label": "identify_fasta_MSF:marvel_wf:split_multi_fasta (5)", "times": [{"starting_time": 1603718955280, "ending_time": 1603718955376, "color":c1(16)}, {"starting_time": 1603718955376, "ending_time": 1603718955844, "color":c2(16), "label": "1.6s \/ 3 MB"}, {"starting_time": 1603718955844, "ending_time": 1603718956872, "color":c1(16)}]},
+{"label": "identify_fasta_MSF:virsorter2_wf:virsorter2 (6)", "times": [{"starting_time": 1603718956878, "ending_time": 1603718956972, "color":c1(14)}]},
+{"label": "identify_fasta_MSF:pprmeta_wf:pprmeta (1)", "times": [{"starting_time": 1603719002153, "ending_time": 1603719002247, "color":c1(20)}, {"starting_time": 1603719002247, "ending_time": 1603719032860, "color":c2(20), "label": "3m 12s \/ 1.1 GB"}, {"starting_time": 1603719032860, "ending_time": 1603719194130, "color":c1(20)}]},
+{"label": "identify_fasta_MSF:sourmash_wf:split_multi_fasta (6)", "times": [{"starting_time": 1603719027970, "ending_time": 1603719028064, "color":c1(15)}, {"starting_time": 1603719028064, "ending_time": 1603719030271, "color":c2(15), "label": "5.4s \/ 3 MB"}, {"starting_time": 1603719030271, "ending_time": 1603719033368, "color":c1(15)}]},
+{"label": "identify_fasta_MSF:marvel_wf:split_multi_fasta (6)", "times": [{"starting_time": 1603719033375, "ending_time": 1603719033468, "color":c1(16)}, {"starting_time": 1603719033468, "ending_time": 1603719035936, "color":c2(16), "label": "4.4s \/ 3 MB"}, {"starting_time": 1603719035936, "ending_time": 1603719037748, "color":c1(16)}]},
+{"label": "identify_fasta_MSF:virsorter2_wf:virsorter2 (7)", "times": [{"starting_time": 1603719037751, "ending_time": 1603719037848, "color":c1(14)}, {"starting_time": 1603719037848, "ending_time": 1603721382841, "color":c2(14), "label": "39m 6s \/ 250.4 MB"}, {"starting_time": 1603721382841, "ending_time": 1603721383558, "color":c1(14)}]},
+{"label": "identify_fasta_MSF:marvel_wf:split_multi_fasta (7)", "times": [{"starting_time": 1603719159943, "ending_time": 1603719160040, "color":c1(16)}, {"starting_time": 1603719160040, "ending_time": 1603719160626, "color":c2(16), "label": "4.2s \/ 2.9 MB"}, {"starting_time": 1603719160626, "ending_time": 1603719164106, "color":c1(16)}]},
+{"label": "identify_fasta_MSF:sourmash_wf:split_multi_fasta (7)", "times": [{"starting_time": 1603719164109, "ending_time": 1603719164206, "color":c1(15)}, {"starting_time": 1603719164206, "ending_time": 1603719164859, "color":c2(15), "label": "1.8s \/ 3 MB"}, {"starting_time": 1603719164859, "ending_time": 1603719165887, "color":c1(15)}]},
+{"label": "identify_fasta_MSF:virsorter2_wf:virsorter2 (8)", "times": [{"starting_time": 1603719165891, "ending_time": 1603719165987, "color":c1(14)}]},
+{"label": "identify_fasta_MSF:metaphinder_wf:metaphinder (2)", "times": [{"starting_time": 1603719194134, "ending_time": 1603719194230, "color":c1(17)}, {"starting_time": 1603719194230, "ending_time": 1603719211233, "color":c2(17), "label": "18.1s \/ 126.7 MB"}, {"starting_time": 1603719211233, "ending_time": 1603719212269, "color":c1(17)}]},
+{"label": "identify_fasta_MSF:pprmeta_wf:pprmeta (2)", "times": [{"starting_time": 1603719212271, "ending_time": 1603719212369, "color":c1(20)}, {"starting_time": 1603719212369, "ending_time": 1603719240989, "color":c2(20), "label": "30s \/ 1.2 GB"}, {"starting_time": 1603719240989, "ending_time": 1603719242227, "color":c1(20)}]},
+{"label": "identify_fasta_MSF:virnet_wf:normalize_contig_size (2)", "times": [{"starting_time": 1603719242230, "ending_time": 1603719242327, "color":c1(18)}, {"starting_time": 1603719242327, "ending_time": 1603719242429, "color":c2(18), "label": "837ms \/ 12.6 MB"}, {"starting_time": 1603719242429, "ending_time": 1603719243067, "color":c1(18)}]},
+{"label": "identify_fasta_MSF:deepvirfinder_wf:deepvirfinder (2)", "times": [{"starting_time": 1603719243070, "ending_time": 1603719243167, "color":c1(19)}, {"starting_time": 1603719243167, "ending_time": 1603719339914, "color":c2(19), "label": "1m 39s \/ 4.6 GB"}, {"starting_time": 1603719339914, "ending_time": 1603719342566, "color":c1(19)}]},
+{"label": "identify_fasta_MSF:metaphinder_wf:metaphinder (3)", "times": [{"starting_time": 1603719342569, "ending_time": 1603719342666, "color":c1(17)}, {"starting_time": 1603719342666, "ending_time": 1603719359376, "color":c2(17), "label": "18.5s \/ 119.7 MB"}, {"starting_time": 1603719359376, "ending_time": 1603719361094, "color":c1(17)}]},
+{"label": "identify_fasta_MSF:pprmeta_wf:pprmeta (3)", "times": [{"starting_time": 1603719361096, "ending_time": 1603719361193, "color":c1(20)}, {"starting_time": 1603719361193, "ending_time": 1603719388369, "color":c2(20), "label": "28.3s \/ 1.7 GB"}, {"starting_time": 1603719388369, "ending_time": 1603719389439, "color":c1(20)}]},
+{"label": "identify_fasta_MSF:virnet_wf:normalize_contig_size (3)", "times": [{"starting_time": 1603719389441, "ending_time": 1603719389539, "color":c1(18)}, {"starting_time": 1603719389539, "ending_time": 1603719389649, "color":c2(18), "label": "874ms \/ 12.7 MB"}, {"starting_time": 1603719389649, "ending_time": 1603719390315, "color":c1(18)}]},
+{"label": "identify_fasta_MSF:deepvirfinder_wf:deepvirfinder (3)", "times": [{"starting_time": 1603719390317, "ending_time": 1603719390415, "color":c1(19)}, {"starting_time": 1603719390415, "ending_time": 1603719483918, "color":c2(19), "label": "1m 34s \/ 4.2 GB"}, {"starting_time": 1603719483918, "ending_time": 1603719484594, "color":c1(19)}]},
+{"label": "identify_fasta_MSF:virnet_wf:normalize_contig_size (4)", "times": [{"starting_time": 1603719484597, "ending_time": 1603719484694, "color":c1(18)}, {"starting_time": 1603719484694, "ending_time": 1603719484797, "color":c2(18), "label": "887ms \/ 13.1 MB"}, {"starting_time": 1603719484797, "ending_time": 1603719485484, "color":c1(18)}]},
+{"label": "identify_fasta_MSF:deepvirfinder_wf:deepvirfinder (4)", "times": [{"starting_time": 1603719485487, "ending_time": 1603719485584, "color":c1(19)}, {"starting_time": 1603719485584, "ending_time": 1603719598200, "color":c2(19), "label": "1m 54s \/ 4.9 GB"}, {"starting_time": 1603719598200, "ending_time": 1603719598998, "color":c1(19)}]},
+{"label": "identify_fasta_MSF:pprmeta_wf:pprmeta (4)", "times": [{"starting_time": 1603719599001, "ending_time": 1603719599098, "color":c1(20)}, {"starting_time": 1603719599098, "ending_time": 1603719626543, "color":c2(20), "label": "28.4s \/ 1.7 GB"}, {"starting_time": 1603719626543, "ending_time": 1603719627410, "color":c1(20)}]},
+{"label": "identify_fasta_MSF:metaphinder_wf:metaphinder (4)", "times": [{"starting_time": 1603719627413, "ending_time": 1603719627510, "color":c1(17)}, {"starting_time": 1603719627510, "ending_time": 1603719642925, "color":c2(17), "label": "16.4s \/ 122.8 MB"}, {"starting_time": 1603719642925, "ending_time": 1603719643794, "color":c1(17)}]},
+{"label": "identify_fasta_MSF:pprmeta_wf:pprmeta (5)", "times": [{"starting_time": 1603719643796, "ending_time": 1603719643894, "color":c1(20)}, {"starting_time": 1603719643894, "ending_time": 1603719671580, "color":c2(20), "label": "28.7s \/ 1.5 GB"}, {"starting_time": 1603719671580, "ending_time": 1603719672510, "color":c1(20)}]},
+{"label": "identify_fasta_MSF:deepvirfinder_wf:deepvirfinder (5)", "times": [{"starting_time": 1603719672513, "ending_time": 1603719672610, "color":c1(19)}, {"starting_time": 1603719672610, "ending_time": 1603719780733, "color":c2(19), "label": "1m 49s \/ 5 GB"}, {"starting_time": 1603719780733, "ending_time": 1603719781439, "color":c1(19)}]},
+{"label": "identify_fasta_MSF:metaphinder_wf:metaphinder (5)", "times": [{"starting_time": 1603719719393, "ending_time": 1603719719491, "color":c1(17)}, {"starting_time": 1603719719491, "ending_time": 1603719735412, "color":c2(17), "label": "16.8s \/ 122.1 MB"}, {"starting_time": 1603719735412, "ending_time": 1603719736168, "color":c1(17)}]},
+{"label": "identify_fasta_MSF:virnet_wf:normalize_contig_size (5)", "times": [{"starting_time": 1603719736171, "ending_time": 1603719736269, "color":c1(18)}, {"starting_time": 1603719736269, "ending_time": 1603719736373, "color":c2(18), "label": "918ms \/ 13.7 MB"}, {"starting_time": 1603719736373, "ending_time": 1603719737089, "color":c1(18)}]},
+{"label": "identify_fasta_MSF:metaphinder_wf:metaphinder (6)", "times": [{"starting_time": 1603719737093, "ending_time": 1603719737189, "color":c1(17)}, {"starting_time": 1603719737189, "ending_time": 1603719824491, "color":c2(17), "label": "1m 28s \/ 133.1 MB"}, {"starting_time": 1603719824491, "ending_time": 1603719825174, "color":c1(17)}]},
+{"label": "identify_fasta_MSF:virnet_wf:normalize_contig_size (6)", "times": [{"starting_time": 1603719781441, "ending_time": 1603719781539, "color":c1(18)}, {"starting_time": 1603719781539, "ending_time": 1603719781924, "color":c2(18), "label": "1.2s \/ 15.9 MB"}, {"starting_time": 1603719781924, "ending_time": 1603719782671, "color":c1(18)}]},
+{"label": "identify_fasta_MSF:pprmeta_wf:pprmeta (6)", "times": [{"starting_time": 1603719782674, "ending_time": 1603719782771, "color":c1(20)}, {"starting_time": 1603719782771, "ending_time": 1603719853467, "color":c2(20), "label": "1m 12s \/ 4.2 GB"}, {"starting_time": 1603719853467, "ending_time": 1603719854271, "color":c1(20)}]},
+{"label": "identify_fasta_MSF:deepvirfinder_wf:deepvirfinder (6)", "times": [{"starting_time": 1603719825178, "ending_time": 1603719825274, "color":c1(19)}, {"starting_time": 1603719825274, "ending_time": 1603719981980, "color":c2(19), "label": "2m 38s \/ 18.8 GB"}, {"starting_time": 1603719981980, "ending_time": 1603719982775, "color":c1(19)}]},
+{"label": "identify_fasta_MSF:deepvirfinder_wf:deepvirfinder (7)", "times": [{"starting_time": 1603719854274, "ending_time": 1603719854371, "color":c1(19)}, {"starting_time": 1603719854371, "ending_time": 1603719956639, "color":c2(19), "label": "1m 43s \/ 5.3 GB"}, {"starting_time": 1603719956639, "ending_time": 1603719957417, "color":c1(19)}]},
+{"label": "identify_fasta_MSF:pprmeta_wf:pprmeta (7)", "times": [{"starting_time": 1603719957420, "ending_time": 1603719957517, "color":c1(20)}, {"starting_time": 1603719957517, "ending_time": 1603719989404, "color":c2(20), "label": "32.7s \/ 1.9 GB"}, {"starting_time": 1603719989404, "ending_time": 1603719990148, "color":c1(20)}]},
+{"label": "identify_fasta_MSF:metaphinder_wf:metaphinder (7)", "times": [{"starting_time": 1603719982778, "ending_time": 1603719982878, "color":c1(17)}, {"starting_time": 1603719982878, "ending_time": 1603719997633, "color":c2(17), "label": "15.7s \/ 123.5 MB"}, {"starting_time": 1603719997633, "ending_time": 1603719998457, "color":c1(17)}]},
+{"label": "identify_fasta_MSF:virnet_wf:normalize_contig_size (7)", "times": [{"starting_time": 1603719990151, "ending_time": 1603719990249, "color":c1(18)}, {"starting_time": 1603719990249, "ending_time": 1603719990362, "color":c2(18), "label": "952ms \/ 16.7 MB"}, {"starting_time": 1603719990362, "ending_time": 1603719991103, "color":c1(18)}]},
+{"label": "identify_fasta_MSF:deepvirfinder_wf:deepvirfinder (8)", "times": [{"starting_time": 1603719991106, "ending_time": 1603719991204, "color":c1(19)}, {"starting_time": 1603719991204, "ending_time": 1603720204509, "color":c2(19), "label": "3m 34s \/ 19 GB"}, {"starting_time": 1603720204509, "ending_time": 1603720205298, "color":c1(19)}]},
+{"label": "identify_fasta_MSF:metaphinder_wf:metaphinder (8)", "times": [{"starting_time": 1603719998459, "ending_time": 1603719998557, "color":c1(17)}, {"starting_time": 1603719998557, "ending_time": 1603720083380, "color":c2(17), "label": "1m 26s \/ 132.6 MB"}, {"starting_time": 1603720083380, "ending_time": 1603720084307, "color":c1(17)}]},
+{"label": "identify_fasta_MSF:virnet_wf:normalize_contig_size (8)", "times": [{"starting_time": 1603720084313, "ending_time": 1603720084411, "color":c1(18)}, {"starting_time": 1603720084411, "ending_time": 1603720084914, "color":c2(18), "label": "1.9s \/ 15 MB"}, {"starting_time": 1603720084914, "ending_time": 1603720086165, "color":c1(18)}]},
+{"label": "identify_fasta_MSF:pprmeta_wf:pprmeta (8)", "times": [{"starting_time": 1603720086172, "ending_time": 1603720086265, "color":c1(20)}, {"starting_time": 1603720086265, "ending_time": 1603720180333, "color":c2(20), "label": "1m 35s \/ 4.3 GB"}, {"starting_time": 1603720180333, "ending_time": 1603720181443, "color":c1(20)}]},
+{"label": "identify_fasta_MSF:marvel_wf:split_multi_fasta (8)", "times": [{"starting_time": 1603720181446, "ending_time": 1603720181543, "color":c1(16)}, {"starting_time": 1603720181543, "ending_time": 1603720185579, "color":c2(16), "label": "5.6s \/ 3.1 MB"}, {"starting_time": 1603720185579, "ending_time": 1603720187077, "color":c1(16)}]},
+{"label": "identify_fasta_MSF:sourmash_wf:split_multi_fasta (8)", "times": [{"starting_time": 1603720181449, "ending_time": 1603720181544, "color":c1(15)}, {"starting_time": 1603720181544, "ending_time": 1603720185530, "color":c2(15), "label": "5.4s \/ 3 MB"}, {"starting_time": 1603720185530, "ending_time": 1603720186845, "color":c1(15)}]},
+{"label": "identify_fasta_MSF:metaphinder_wf:filter_metaphinder (1)", "times": [{"starting_time": 1603720181451, "ending_time": 1603720181544, "color":c1(21)}, {"starting_time": 1603720181544, "ending_time": 1603720181558, "color":c2(21), "label": "1.7s \/ 0"}, {"starting_time": 1603720181558, "ending_time": 1603720183112, "color":c1(21)}]},
+{"label": "identify_fasta_MSF:metaphinder_wf:metaphinder_collect_data (3)", "times": [{"starting_time": 1603720181453, "ending_time": 1603720181545, "color":c1(22)}, {"starting_time": 1603720181545, "ending_time": 1603720181605, "color":c2(22), "label": "1.8s \/ 3 MB"}, {"starting_time": 1603720181605, "ending_time": 1603720183212, "color":c1(22)}]},
+{"label": "identify_fasta_MSF:metaphinder_wf:metaphinder_collect_data (1)", "times": [{"starting_time": 1603720183117, "ending_time": 1603720183218, "color":c1(22)}, {"starting_time": 1603720183218, "ending_time": 1603720183268, "color":c2(22), "label": "1.2s \/ 3 MB"}, {"starting_time": 1603720183268, "ending_time": 1603720184309, "color":c1(22)}]},
+{"label": "identify_fasta_MSF:metaphinder_wf:metaphinder_collect_data (2)", "times": [{"starting_time": 1603720183216, "ending_time": 1603720183311, "color":c1(22)}, {"starting_time": 1603720183311, "ending_time": 1603720183379, "color":c2(22), "label": "1.4s \/ 3 MB"}, {"starting_time": 1603720183379, "ending_time": 1603720184633, "color":c1(22)}]},
+{"label": "identify_fasta_MSF:metaphinder_wf:metaphinder_collect_data (5)", "times": [{"starting_time": 1603720184312, "ending_time": 1603720184411, "color":c1(22)}, {"starting_time": 1603720184411, "ending_time": 1603720184443, "color":c2(22), "label": "1.4s \/ 3.1 MB"}, {"starting_time": 1603720184443, "ending_time": 1603720185735, "color":c1(22)}]},
+{"label": "identify_fasta_MSF:metaphinder_wf:metaphinder_collect_data (4)", "times": [{"starting_time": 1603720184636, "ending_time": 1603720184734, "color":c1(22)}, {"starting_time": 1603720184734, "ending_time": 1603720184799, "color":c2(22), "label": "1.5s \/ 3 MB"}, {"starting_time": 1603720184799, "ending_time": 1603720186163, "color":c1(22)}]},
+{"label": "identify_fasta_MSF:metaphinder_wf:metaphinder_collect_data (7)", "times": [{"starting_time": 1603720185738, "ending_time": 1603720185839, "color":c1(22)}, {"starting_time": 1603720185839, "ending_time": 1603720185877, "color":c2(22), "label": "1.8s \/ 544 KB"}, {"starting_time": 1603720185877, "ending_time": 1603720187524, "color":c1(22)}]},
+{"label": "identify_fasta_MSF:metaphinder_wf:filter_metaphinder (6)", "times": [{"starting_time": 1603720186166, "ending_time": 1603720186265, "color":c1(21)}, {"starting_time": 1603720186265, "ending_time": 1603720186276, "color":c2(21), "label": "1.8s \/ 0"}, {"starting_time": 1603720186276, "ending_time": 1603720188009, "color":c1(21)}]},
+{"label": "identify_fasta_MSF:metaphinder_wf:filter_metaphinder (8)", "times": [{"starting_time": 1603720186849, "ending_time": 1603720186945, "color":c1(21)}, {"starting_time": 1603720186945, "ending_time": 1603720186951, "color":c2(21), "label": "1.3s \/ 0"}, {"starting_time": 1603720186951, "ending_time": 1603720188132, "color":c1(21)}]},
+{"label": "identify_fasta_MSF:metaphinder_wf:metaphinder_collect_data (6)", "times": [{"starting_time": 1603720187081, "ending_time": 1603720187177, "color":c1(22)}, {"starting_time": 1603720187177, "ending_time": 1603720187216, "color":c2(22), "label": "1.7s \/ 3.1 MB"}, {"starting_time": 1603720187216, "ending_time": 1603720188790, "color":c1(22)}]},
+{"label": "identify_fasta_MSF:metaphinder_wf:filter_metaphinder (2)", "times": [{"starting_time": 1603720187528, "ending_time": 1603720187624, "color":c1(21)}, {"starting_time": 1603720187624, "ending_time": 1603720187630, "color":c2(21), "label": "1.4s \/ 0"}, {"starting_time": 1603720187630, "ending_time": 1603720188928, "color":c1(21)}]},
+{"label": "identify_fasta_MSF:metaphinder_wf:filter_metaphinder (3)", "times": [{"starting_time": 1603720188012, "ending_time": 1603720188109, "color":c1(21)}, {"starting_time": 1603720188109, "ending_time": 1603720188116, "color":c2(21), "label": "1.6s \/ 0"}, {"starting_time": 1603720188116, "ending_time": 1603720189634, "color":c1(21)}]},
+{"label": "identify_fasta_MSF:metaphinder_wf:filter_metaphinder (5)", "times": [{"starting_time": 1603720188134, "ending_time": 1603720188232, "color":c1(21)}, {"starting_time": 1603720188232, "ending_time": 1603720188237, "color":c2(21), "label": "1.1s \/ 0"}, {"starting_time": 1603720188237, "ending_time": 1603720189254, "color":c1(21)}]},
+{"label": "identify_fasta_MSF:metaphinder_wf:filter_metaphinder (7)", "times": [{"starting_time": 1603720188793, "ending_time": 1603720188891, "color":c1(21)}, {"starting_time": 1603720188891, "ending_time": 1603720188898, "color":c2(21), "label": "1.5s \/ 0"}, {"starting_time": 1603720188898, "ending_time": 1603720190313, "color":c1(21)}]},
+{"label": "identify_fasta_MSF:metaphinder_wf:filter_metaphinder (4)", "times": [{"starting_time": 1603720188930, "ending_time": 1603720189028, "color":c1(21)}, {"starting_time": 1603720189028, "ending_time": 1603720189035, "color":c2(21), "label": "1.5s \/ 0"}, {"starting_time": 1603720189035, "ending_time": 1603720190407, "color":c1(21)}]},
+{"label": "identify_fasta_MSF:metaphinder_wf:metaphinder_collect_data (8)", "times": [{"starting_time": 1603720189257, "ending_time": 1603720189354, "color":c1(22)}, {"starting_time": 1603720189354, "ending_time": 1603720189386, "color":c2(22), "label": "2s \/ 2.9 MB"}, {"starting_time": 1603720189386, "ending_time": 1603720191218, "color":c1(22)}]},
+{"label": "identify_fasta_MSF:pprmeta_wf:filter_PPRmeta (1)", "times": [{"starting_time": 1603720189636, "ending_time": 1603720189734, "color":c1(23)}, {"starting_time": 1603720189734, "ending_time": 1603720189743, "color":c2(23), "label": "1.5s \/ 0"}, {"starting_time": 1603720189743, "ending_time": 1603720191106, "color":c1(23)}]},
+{"label": "identify_fasta_MSF:pprmeta_wf:filter_PPRmeta (2)", "times": [{"starting_time": 1603720190316, "ending_time": 1603720190409, "color":c1(23)}, {"starting_time": 1603720190409, "ending_time": 1603720190417, "color":c2(23), "label": "1.8s \/ 0"}, {"starting_time": 1603720190417, "ending_time": 1603720192089, "color":c1(23)}]},
+{"label": "identify_fasta_MSF:pprmeta_wf:pprmeta_collect_data (1)", "times": [{"starting_time": 1603720190410, "ending_time": 1603720190507, "color":c1(24)}, {"starting_time": 1603720190507, "ending_time": 1603720190516, "color":c2(24), "label": "1.6s \/ 0"}, {"starting_time": 1603720190516, "ending_time": 1603720191985, "color":c1(24)}]},
+{"label": "identify_fasta_MSF:pprmeta_wf:filter_PPRmeta (3)", "times": [{"starting_time": 1603720191108, "ending_time": 1603720191206, "color":c1(23)}, {"starting_time": 1603720191206, "ending_time": 1603720191211, "color":c2(23), "label": "1.8s \/ 0"}, {"starting_time": 1603720191211, "ending_time": 1603720192885, "color":c1(23)}]},
+{"label": "identify_fasta_MSF:pprmeta_wf:filter_PPRmeta (4)", "times": [{"starting_time": 1603720191221, "ending_time": 1603720191318, "color":c1(23)}, {"starting_time": 1603720191318, "ending_time": 1603720191324, "color":c2(23), "label": "1.6s \/ 0"}, {"starting_time": 1603720191324, "ending_time": 1603720192789, "color":c1(23)}]},
+{"label": "identify_fasta_MSF:pprmeta_wf:filter_PPRmeta (5)", "times": [{"starting_time": 1603720191988, "ending_time": 1603720192085, "color":c1(23)}, {"starting_time": 1603720192085, "ending_time": 1603720192091, "color":c2(23), "label": "1.7s \/ 0"}, {"starting_time": 1603720192091, "ending_time": 1603720193642, "color":c1(23)}]},
+{"label": "identify_fasta_MSF:pprmeta_wf:filter_PPRmeta (6)", "times": [{"starting_time": 1603720192091, "ending_time": 1603720192189, "color":c1(23)}, {"starting_time": 1603720192189, "ending_time": 1603720192198, "color":c2(23), "label": "1.7s \/ 0"}, {"starting_time": 1603720192198, "ending_time": 1603720193741, "color":c1(23)}]},
+{"label": "identify_fasta_MSF:pprmeta_wf:filter_PPRmeta (7)", "times": [{"starting_time": 1603720192792, "ending_time": 1603720192888, "color":c1(23)}, {"starting_time": 1603720192888, "ending_time": 1603720192893, "color":c2(23), "label": "1.8s \/ 0"}, {"starting_time": 1603720192893, "ending_time": 1603720194544, "color":c1(23)}]},
+{"label": "identify_fasta_MSF:pprmeta_wf:filter_PPRmeta (8)", "times": [{"starting_time": 1603720192889, "ending_time": 1603720192985, "color":c1(23)}, {"starting_time": 1603720192985, "ending_time": 1603720192992, "color":c2(23), "label": "1.5s \/ 0"}, {"starting_time": 1603720192992, "ending_time": 1603720194394, "color":c1(23)}]},
+{"label": "identify_fasta_MSF:pprmeta_wf:pprmeta_collect_data (2)", "times": [{"starting_time": 1603720193644, "ending_time": 1603720193743, "color":c1(24)}, {"starting_time": 1603720193743, "ending_time": 1603720193763, "color":c2(24), "label": "2s \/ 3 MB"}, {"starting_time": 1603720193763, "ending_time": 1603720195665, "color":c1(24)}]},
+{"label": "identify_fasta_MSF:pprmeta_wf:pprmeta_collect_data (3)", "times": [{"starting_time": 1603720193744, "ending_time": 1603720193841, "color":c1(24)}, {"starting_time": 1603720193841, "ending_time": 1603720193853, "color":c2(24), "label": "1.7s \/ 0"}, {"starting_time": 1603720193853, "ending_time": 1603720195442, "color":c1(24)}]},
+{"label": "identify_fasta_MSF:pprmeta_wf:pprmeta_collect_data (5)", "times": [{"starting_time": 1603720194396, "ending_time": 1603720194496, "color":c1(24)}, {"starting_time": 1603720194496, "ending_time": 1603720194514, "color":c2(24), "label": "2.1s \/ 3 MB"}, {"starting_time": 1603720194514, "ending_time": 1603720196502, "color":c1(24)}]},
+{"label": "identify_fasta_MSF:pprmeta_wf:pprmeta_collect_data (4)", "times": [{"starting_time": 1603720194547, "ending_time": 1603720194644, "color":c1(24)}, {"starting_time": 1603720194644, "ending_time": 1603720194664, "color":c2(24), "label": "1.8s \/ 3 MB"}, {"starting_time": 1603720194664, "ending_time": 1603720196303, "color":c1(24)}]},
+{"label": "identify_fasta_MSF:pprmeta_wf:pprmeta_collect_data (6)", "times": [{"starting_time": 1603720195445, "ending_time": 1603720195542, "color":c1(24)}, {"starting_time": 1603720195542, "ending_time": 1603720195552, "color":c2(24), "label": "1.2s \/ 0"}, {"starting_time": 1603720195552, "ending_time": 1603720196602, "color":c1(24)}]},
+{"label": "identify_fasta_MSF:pprmeta_wf:pprmeta_collect_data (7)", "times": [{"starting_time": 1603720195668, "ending_time": 1603720195766, "color":c1(24)}, {"starting_time": 1603720195766, "ending_time": 1603720195777, "color":c2(24), "label": "1.5s \/ 3.1 MB"}, {"starting_time": 1603720195777, "ending_time": 1603720197131, "color":c1(24)}]},
+{"label": "identify_fasta_MSF:pprmeta_wf:pprmeta_collect_data (8)", "times": [{"starting_time": 1603720196306, "ending_time": 1603720196403, "color":c1(24)}, {"starting_time": 1603720196403, "ending_time": 1603720196415, "color":c2(24), "label": "1.2s \/ 3 MB"}, {"starting_time": 1603720196415, "ending_time": 1603720197555, "color":c1(24)}]},
+{"label": "identify_fasta_MSF:sourmash_wf:sourmash (1)", "times": [{"starting_time": 1603720197557, "ending_time": 1603720197655, "color":c1(25)}, {"starting_time": 1603720197655, "ending_time": 1603720254431, "color":c2(25), "label": "57.6s \/ 108.1 MB"}, {"starting_time": 1603720254431, "ending_time": 1603720255199, "color":c1(25)}]},
+{"label": "identify_fasta_MSF:marvel_wf:marvel (1)", "times": [{"starting_time": 1603720205304, "ending_time": 1603720205398, "color":c1(26)}, {"starting_time": 1603720205398, "ending_time": 1603720487702, "color":c2(26), "label": "6m 13s \/ 381 MB"}, {"starting_time": 1603720487702, "ending_time": 1603720578603, "color":c1(26)}]},
+{"label": "identify_fasta_MSF:sourmash_wf:sourmash (2)", "times": [{"starting_time": 1603720255202, "ending_time": 1603720255299, "color":c1(25)}, {"starting_time": 1603720255299, "ending_time": 1603720308302, "color":c2(25), "label": "53.8s \/ 108.2 MB"}, {"starting_time": 1603720308302, "ending_time": 1603720308968, "color":c1(25)}]},
+{"label": "identify_fasta_MSF:marvel_wf:marvel (2)", "times": [{"starting_time": 1603720308970, "ending_time": 1603720309068, "color":c1(26)}, {"starting_time": 1603720309068, "ending_time": 1603720587891, "color":c2(26), "label": "4m 40s \/ 389.9 MB"}, {"starting_time": 1603720587891, "ending_time": 1603720588682, "color":c1(26)}]},
+{"label": "identify_fasta_MSF:metaphinder_own_DB_wf:metaphinder_own_DB (4)", "times": [{"starting_time": 1603720578605, "ending_time": 1603720578703, "color":c1(27)}, {"starting_time": 1603720578703, "ending_time": 1603720627265, "color":c2(27), "label": "49.4s \/ 180.7 MB"}, {"starting_time": 1603720627265, "ending_time": 1603720628046, "color":c1(27)}]},
+{"label": "identify_fasta_MSF:metaphinder_own_DB_wf:metaphinder_own_DB (5)", "times": [{"starting_time": 1603720588684, "ending_time": 1603720588781, "color":c1(27)}, {"starting_time": 1603720588781, "ending_time": 1603720639097, "color":c2(27), "label": "51.2s \/ 185 MB"}, {"starting_time": 1603720639097, "ending_time": 1603720639861, "color":c1(27)}]},
+{"label": "identify_fasta_MSF:metaphinder_own_DB_wf:metaphinder_own_DB (3)", "times": [{"starting_time": 1603720628049, "ending_time": 1603720628146, "color":c1(27)}, {"starting_time": 1603720628146, "ending_time": 1603720678221, "color":c2(27), "label": "51s \/ 177.1 MB"}, {"starting_time": 1603720678221, "ending_time": 1603720679000, "color":c1(27)}]},
+{"label": "identify_fasta_MSF:metaphinder_own_DB_wf:metaphinder_own_DB (7)", "times": [{"starting_time": 1603720639864, "ending_time": 1603720639962, "color":c1(27)}, {"starting_time": 1603720639962, "ending_time": 1603720686036, "color":c2(27), "label": "46.9s \/ 182.2 MB"}, {"starting_time": 1603720686036, "ending_time": 1603720686811, "color":c1(27)}]},
+{"label": "identify_fasta_MSF:metaphinder_own_DB_wf:metaphinder_own_DB (2)", "times": [{"starting_time": 1603720679003, "ending_time": 1603720679100, "color":c1(27)}, {"starting_time": 1603720679100, "ending_time": 1603720731552, "color":c2(27), "label": "53.4s \/ 175.9 MB"}, {"starting_time": 1603720731552, "ending_time": 1603720732375, "color":c1(27)}]},
+{"label": "identify_fasta_MSF:metaphinder_own_DB_wf:metaphinder_own_DB (8)", "times": [{"starting_time": 1603720686814, "ending_time": 1603720686911, "color":c1(27)}, {"starting_time": 1603720686911, "ending_time": 1603720922236, "color":c2(27), "label": "3m 56s \/ 182.8 MB"}, {"starting_time": 1603720922236, "ending_time": 1603720923023, "color":c1(27)}]},
+{"label": "identify_fasta_MSF:metaphinder_own_DB_wf:metaphinder_own_DB (1)", "times": [{"starting_time": 1603720732378, "ending_time": 1603720732475, "color":c1(27)}, {"starting_time": 1603720732475, "ending_time": 1603720784427, "color":c2(27), "label": "52.9s \/ 182.8 MB"}, {"starting_time": 1603720784427, "ending_time": 1603720785310, "color":c1(27)}]},
+{"label": "identify_fasta_MSF:metaphinder_own_DB_wf:metaphinder_own_DB (6)", "times": [{"starting_time": 1603720785312, "ending_time": 1603720785410, "color":c1(27)}, {"starting_time": 1603720785410, "ending_time": 1603721005085, "color":c2(27), "label": "3m 41s \/ 184.5 MB"}, {"starting_time": 1603721005085, "ending_time": 1603721005883, "color":c1(27)}]},
+{"label": "identify_fasta_MSF:marvel_wf:marvel (3)", "times": [{"starting_time": 1603720923026, "ending_time": 1603720923123, "color":c1(26)}, {"starting_time": 1603720923123, "ending_time": 1603721010897, "color":c2(26), "label": "1m 28s \/ -"}]},
+{"label": "identify_fasta_MSF:sourmash_wf:sourmash (3)", "times": [{"starting_time": 1603721005886, "ending_time": 1603721005983, "color":c1(25)}, {"starting_time": 1603721005983, "ending_time": 1603721074438, "color":c2(25), "label": "1m 9s \/ 108.1 MB"}, {"starting_time": 1603721074438, "ending_time": 1603721075186, "color":c1(25)}]},
+{"label": "identify_fasta_MSF:virnet_wf:virnet (1)", "times": [{"starting_time": 1603721010900, "ending_time": 1603721010998, "color":c1(28)}, {"starting_time": 1603721010998, "ending_time": 1603721020826, "color":c2(28), "label": "47s \/ 1.2 GB"}, {"starting_time": 1603721020826, "ending_time": 1603721057946, "color":c1(28)}]},
+{"label": "identify_fasta_MSF:marvel_wf:marvel (4)", "times": [{"starting_time": 1603721057948, "ending_time": 1603721058047, "color":c1(26)}, {"starting_time": 1603721058047, "ending_time": 1603721128801, "color":c2(26), "label": "1m 11s \/ -"}]},
+{"label": "identify_fasta_MSF:sourmash_wf:sourmash (4)", "times": [{"starting_time": 1603721075188, "ending_time": 1603721075287, "color":c1(25)}, {"starting_time": 1603721075287, "ending_time": 1603721152349, "color":c2(25), "label": "1m 18s \/ 108.2 MB"}, {"starting_time": 1603721152349, "ending_time": 1603721153034, "color":c1(25)}]},
+{"label": "identify_fasta_MSF:sourmash_wf:sourmash (5)", "times": [{"starting_time": 1603721128804, "ending_time": 1603721128902, "color":c1(25)}, {"starting_time": 1603721128902, "ending_time": 1603721198560, "color":c2(25), "label": "1m 10s \/ 108.4 MB"}, {"starting_time": 1603721198560, "ending_time": 1603721199230, "color":c1(25)}]},
+{"label": "identify_fasta_MSF:marvel_wf:marvel (5)", "times": [{"starting_time": 1603721153038, "ending_time": 1603721153134, "color":c1(26)}, {"starting_time": 1603721153134, "ending_time": 1603721246273, "color":c2(26), "label": "1m 33s \/ -"}]},
+{"label": "identify_fasta_MSF:sourmash_wf:sourmash (6)", "times": [{"starting_time": 1603721199233, "ending_time": 1603721199330, "color":c1(25)}, {"starting_time": 1603721199330, "ending_time": 1603721297219, "color":c2(25), "label": "1m 39s \/ 108.4 MB"}, {"starting_time": 1603721297219, "ending_time": 1603721297937, "color":c1(25)}]},
+{"label": "identify_fasta_MSF:marvel_wf:marvel (6)", "times": [{"starting_time": 1603721246275, "ending_time": 1603721246373, "color":c1(26)}, {"starting_time": 1603721246373, "ending_time": 1603722214778, "color":c2(26), "label": "16m 9s \/ -"}]},
+{"label": "identify_fasta_MSF:marvel_wf:marvel (7)", "times": [{"starting_time": 1603721297939, "ending_time": 1603721298037, "color":c1(26)}, {"starting_time": 1603721298037, "ending_time": 1603721528777, "color":c2(26), "label": "3m 52s \/ 382 MB"}, {"starting_time": 1603721528777, "ending_time": 1603721529460, "color":c1(26)}]},
+{"label": "identify_fasta_MSF:deepvirfinder_wf:deepvirfinder_collect_data (1)", "times": [{"starting_time": 1603721383561, "ending_time": 1603721383658, "color":c1(29)}, {"starting_time": 1603721383658, "ending_time": 1603721383673, "color":c2(29), "label": "861ms \/ 0"}, {"starting_time": 1603721383673, "ending_time": 1603721384422, "color":c1(29)}]},
+{"label": "identify_fasta_MSF:deepvirfinder_wf:deepvirfinder_collect_data (2)", "times": [{"starting_time": 1603721384425, "ending_time": 1603721384522, "color":c1(29)}, {"starting_time": 1603721384522, "ending_time": 1603721384535, "color":c2(29), "label": "789ms \/ 3.1 MB"}, {"starting_time": 1603721384535, "ending_time": 1603721385214, "color":c1(29)}]},
+{"label": "identify_fasta_MSF:deepvirfinder_wf:deepvirfinder_collect_data (4)", "times": [{"starting_time": 1603721385217, "ending_time": 1603721385314, "color":c1(29)}, {"starting_time": 1603721385314, "ending_time": 1603721385324, "color":c2(29), "label": "829ms \/ 0"}, {"starting_time": 1603721385324, "ending_time": 1603721386046, "color":c1(29)}]},
+{"label": "identify_fasta_MSF:deepvirfinder_wf:deepvirfinder_collect_data (3)", "times": [{"starting_time": 1603721386048, "ending_time": 1603721386146, "color":c1(29)}, {"starting_time": 1603721386146, "ending_time": 1603721386161, "color":c2(29), "label": "798ms \/ 3 MB"}, {"starting_time": 1603721386161, "ending_time": 1603721386846, "color":c1(29)}]},
+{"label": "identify_fasta_MSF:deepvirfinder_wf:deepvirfinder_collect_data (5)", "times": [{"starting_time": 1603721386849, "ending_time": 1603721386946, "color":c1(29)}, {"starting_time": 1603721386946, "ending_time": 1603721386957, "color":c2(29), "label": "888ms \/ 3 MB"}, {"starting_time": 1603721386957, "ending_time": 1603721387737, "color":c1(29)}]},
+{"label": "identify_fasta_MSF:deepvirfinder_wf:deepvirfinder_collect_data (6)", "times": [{"starting_time": 1603721387739, "ending_time": 1603721387837, "color":c1(29)}, {"starting_time": 1603721387837, "ending_time": 1603721387849, "color":c2(29), "label": "857ms \/ 0"}, {"starting_time": 1603721387849, "ending_time": 1603721388596, "color":c1(29)}]},
+{"label": "identify_fasta_MSF:deepvirfinder_wf:deepvirfinder_collect_data (8)", "times": [{"starting_time": 1603721388599, "ending_time": 1603721388696, "color":c1(29)}, {"starting_time": 1603721388696, "ending_time": 1603721388710, "color":c2(29), "label": "827ms \/ 3.1 MB"}, {"starting_time": 1603721388710, "ending_time": 1603721389426, "color":c1(29)}]},
+{"label": "identify_fasta_MSF:deepvirfinder_wf:deepvirfinder_collect_data (7)", "times": [{"starting_time": 1603721389429, "ending_time": 1603721389526, "color":c1(29)}, {"starting_time": 1603721389526, "ending_time": 1603721389541, "color":c2(29), "label": "894ms \/ 3 MB"}, {"starting_time": 1603721389541, "ending_time": 1603721390323, "color":c1(29)}]},
+{"label": "identify_fasta_MSF:deepvirfinder_wf:filter_deepvirfinder (3)", "times": [{"starting_time": 1603721390325, "ending_time": 1603721390424, "color":c1(30)}, {"starting_time": 1603721390424, "ending_time": 1603721390430, "color":c2(30), "label": "796ms \/ 0"}, {"starting_time": 1603721390430, "ending_time": 1603721391121, "color":c1(30)}]},
+{"label": "identify_fasta_MSF:deepvirfinder_wf:filter_deepvirfinder (1)", "times": [{"starting_time": 1603721391122, "ending_time": 1603721391220, "color":c1(30)}, {"starting_time": 1603721391220, "ending_time": 1603721391225, "color":c2(30), "label": "854ms \/ 0"}, {"starting_time": 1603721391225, "ending_time": 1603721391976, "color":c1(30)}]},
+{"label": "identify_fasta_MSF:deepvirfinder_wf:filter_deepvirfinder (8)", "times": [{"starting_time": 1603721391978, "ending_time": 1603721392076, "color":c1(30)}, {"starting_time": 1603721392076, "ending_time": 1603721392086, "color":c2(30), "label": "829ms \/ 0"}, {"starting_time": 1603721392086, "ending_time": 1603721392807, "color":c1(30)}]},
+{"label": "identify_fasta_MSF:deepvirfinder_wf:filter_deepvirfinder (7)", "times": [{"starting_time": 1603721392809, "ending_time": 1603721392908, "color":c1(30)}, {"starting_time": 1603721392908, "ending_time": 1603721392914, "color":c2(30), "label": "808ms \/ 0"}, {"starting_time": 1603721392914, "ending_time": 1603721393617, "color":c1(30)}]},
+{"label": "identify_fasta_MSF:deepvirfinder_wf:filter_deepvirfinder (5)", "times": [{"starting_time": 1603721393619, "ending_time": 1603721393717, "color":c1(30)}, {"starting_time": 1603721393717, "ending_time": 1603721393725, "color":c2(30), "label": "785ms \/ 0"}, {"starting_time": 1603721393725, "ending_time": 1603721394404, "color":c1(30)}]},
+{"label": "identify_fasta_MSF:deepvirfinder_wf:filter_deepvirfinder (6)", "times": [{"starting_time": 1603721394407, "ending_time": 1603721394504, "color":c1(30)}, {"starting_time": 1603721394504, "ending_time": 1603721394518, "color":c2(30), "label": "908ms \/ 0"}, {"starting_time": 1603721394518, "ending_time": 1603721395315, "color":c1(30)}]},
+{"label": "identify_fasta_MSF:deepvirfinder_wf:filter_deepvirfinder (2)", "times": [{"starting_time": 1603721395317, "ending_time": 1603721395414, "color":c1(30)}, {"starting_time": 1603721395414, "ending_time": 1603721395421, "color":c2(30), "label": "773ms \/ 0"}, {"starting_time": 1603721395421, "ending_time": 1603721396090, "color":c1(30)}]},
+{"label": "identify_fasta_MSF:deepvirfinder_wf:filter_deepvirfinder (4)", "times": [{"starting_time": 1603721396092, "ending_time": 1603721396190, "color":c1(30)}, {"starting_time": 1603721396190, "ending_time": 1603721396196, "color":c2(30), "label": "863ms \/ 0"}, {"starting_time": 1603721396196, "ending_time": 1603721396955, "color":c1(30)}]},
+{"label": "identify_fasta_MSF:metaphinder_own_DB_wf:metaphinder_collect_data_ownDB (1)", "times": [{"starting_time": 1603721396959, "ending_time": 1603721397056, "color":c1(31)}, {"starting_time": 1603721397056, "ending_time": 1603721397112, "color":c2(31), "label": "871ms \/ 3.1 MB"}, {"starting_time": 1603721397112, "ending_time": 1603721397830, "color":c1(31)}]},
+{"label": "identify_fasta_MSF:metaphinder_own_DB_wf:metaphinder_collect_data_ownDB (2)", "times": [{"starting_time": 1603721397833, "ending_time": 1603721397931, "color":c1(31)}, {"starting_time": 1603721397931, "ending_time": 1603721397981, "color":c2(31), "label": "848ms \/ 3.1 MB"}, {"starting_time": 1603721397981, "ending_time": 1603721398681, "color":c1(31)}]},
+{"label": "identify_fasta_MSF:metaphinder_own_DB_wf:metaphinder_collect_data_ownDB (3)", "times": [{"starting_time": 1603721398684, "ending_time": 1603721398782, "color":c1(31)}, {"starting_time": 1603721398782, "ending_time": 1603721398830, "color":c2(31), "label": "842ms \/ 3.1 MB"}, {"starting_time": 1603721398830, "ending_time": 1603721399526, "color":c1(31)}]},
+{"label": "identify_fasta_MSF:metaphinder_own_DB_wf:metaphinder_collect_data_ownDB (4)", "times": [{"starting_time": 1603721399529, "ending_time": 1603721399626, "color":c1(31)}, {"starting_time": 1603721399626, "ending_time": 1603721399676, "color":c2(31), "label": "836ms \/ 3 MB"}, {"starting_time": 1603721399676, "ending_time": 1603721400365, "color":c1(31)}]},
+{"label": "identify_fasta_MSF:metaphinder_own_DB_wf:metaphinder_collect_data_ownDB (5)", "times": [{"starting_time": 1603721400368, "ending_time": 1603721400465, "color":c1(31)}, {"starting_time": 1603721400465, "ending_time": 1603721400517, "color":c2(31), "label": "794ms \/ 3 MB"}, {"starting_time": 1603721400517, "ending_time": 1603721401162, "color":c1(31)}]},
+{"label": "identify_fasta_MSF:metaphinder_own_DB_wf:metaphinder_collect_data_ownDB (6)", "times": [{"starting_time": 1603721401165, "ending_time": 1603721401262, "color":c1(31)}, {"starting_time": 1603721401262, "ending_time": 1603721401313, "color":c2(31), "label": "794ms \/ 3.1 MB"}, {"starting_time": 1603721401313, "ending_time": 1603721401959, "color":c1(31)}]},
+{"label": "identify_fasta_MSF:metaphinder_own_DB_wf:metaphinder_collect_data_ownDB (7)", "times": [{"starting_time": 1603721401961, "ending_time": 1603721402060, "color":c1(31)}, {"starting_time": 1603721402060, "ending_time": 1603721402112, "color":c2(31), "label": "828ms \/ 3 MB"}, {"starting_time": 1603721402112, "ending_time": 1603721402789, "color":c1(31)}]},
+{"label": "identify_fasta_MSF:metaphinder_own_DB_wf:filter_metaphinder_own_DB (3)", "times": [{"starting_time": 1603721402791, "ending_time": 1603721402890, "color":c1(32)}, {"starting_time": 1603721402890, "ending_time": 1603721402901, "color":c2(32), "label": "772ms \/ 0"}, {"starting_time": 1603721402901, "ending_time": 1603721403563, "color":c1(32)}]},
+{"label": "identify_fasta_MSF:metaphinder_own_DB_wf:filter_metaphinder_own_DB (1)", "times": [{"starting_time": 1603721403565, "ending_time": 1603721403663, "color":c1(32)}, {"starting_time": 1603721403663, "ending_time": 1603721403669, "color":c2(32), "label": "837ms \/ 0"}, {"starting_time": 1603721403669, "ending_time": 1603721404402, "color":c1(32)}]},
+{"label": "identify_fasta_MSF:metaphinder_own_DB_wf:filter_metaphinder_own_DB (5)", "times": [{"starting_time": 1603721404405, "ending_time": 1603721404502, "color":c1(32)}, {"starting_time": 1603721404502, "ending_time": 1603721404509, "color":c2(32), "label": "806ms \/ 0"}, {"starting_time": 1603721404509, "ending_time": 1603721405211, "color":c1(32)}]},
+{"label": "identify_fasta_MSF:metaphinder_own_DB_wf:filter_metaphinder_own_DB (2)", "times": [{"starting_time": 1603721405214, "ending_time": 1603721405311, "color":c1(32)}, {"starting_time": 1603721405311, "ending_time": 1603721405316, "color":c2(32), "label": "800ms \/ 0"}, {"starting_time": 1603721405316, "ending_time": 1603721406014, "color":c1(32)}]},
+{"label": "identify_fasta_MSF:metaphinder_own_DB_wf:filter_metaphinder_own_DB (4)", "times": [{"starting_time": 1603721406017, "ending_time": 1603721406114, "color":c1(32)}, {"starting_time": 1603721406114, "ending_time": 1603721406118, "color":c2(32), "label": "717ms \/ 0"}, {"starting_time": 1603721406118, "ending_time": 1603721406734, "color":c1(32)}]},
+{"label": "identify_fasta_MSF:metaphinder_own_DB_wf:filter_metaphinder_own_DB (6)", "times": [{"starting_time": 1603721406736, "ending_time": 1603721406834, "color":c1(32)}, {"starting_time": 1603721406834, "ending_time": 1603721406841, "color":c2(32), "label": "874ms \/ 0"}, {"starting_time": 1603721406841, "ending_time": 1603721407610, "color":c1(32)}]},
+{"label": "identify_fasta_MSF:metaphinder_own_DB_wf:metaphinder_collect_data_ownDB (8)", "times": [{"starting_time": 1603721407612, "ending_time": 1603721407710, "color":c1(31)}, {"starting_time": 1603721407710, "ending_time": 1603721407760, "color":c2(31), "label": "826ms \/ 5.7 MB"}, {"starting_time": 1603721407760, "ending_time": 1603721408438, "color":c1(31)}]},
+{"label": "identify_fasta_MSF:metaphinder_own_DB_wf:filter_metaphinder_own_DB (7)", "times": [{"starting_time": 1603721408441, "ending_time": 1603721408538, "color":c1(32)}, {"starting_time": 1603721408538, "ending_time": 1603721408545, "color":c2(32), "label": "780ms \/ 0"}, {"starting_time": 1603721408545, "ending_time": 1603721409221, "color":c1(32)}]},
+{"label": "identify_fasta_MSF:metaphinder_own_DB_wf:filter_metaphinder_own_DB (8)", "times": [{"starting_time": 1603721409224, "ending_time": 1603721409321, "color":c1(32)}, {"starting_time": 1603721409321, "ending_time": 1603721409330, "color":c2(32), "label": "843ms \/ 0"}, {"starting_time": 1603721409330, "ending_time": 1603721410067, "color":c1(32)}]},
+{"label": "identify_fasta_MSF:sourmash_wf:sourmash (7)", "times": [{"starting_time": 1603721477001, "ending_time": 1603721477099, "color":c1(25)}, {"starting_time": 1603721477099, "ending_time": 1603721535064, "color":c2(25), "label": "58.7s \/ 108.1 MB"}, {"starting_time": 1603721535064, "ending_time": 1603721535719, "color":c1(25)}]},
+{"label": "identify_fasta_MSF:virnet_wf:virnet (2)", "times": [{"starting_time": 1603721529463, "ending_time": 1603721529560, "color":c1(28)}, {"starting_time": 1603721529560, "ending_time": 1603721534405, "color":c2(28), "label": "5.6s \/ 1.2 GB"}, {"starting_time": 1603721534405, "ending_time": 1603721535030, "color":c1(28)}]},
+{"label": "identify_fasta_MSF:virnet_wf:virnet (3)", "times": [{"starting_time": 1603721535034, "ending_time": 1603721535130, "color":c1(28)}, {"starting_time": 1603721535130, "ending_time": 1603721540492, "color":c2(28), "label": "6.2s \/ 1.3 GB"}, {"starting_time": 1603721540492, "ending_time": 1603721541236, "color":c1(28)}]},
+{"label": "identify_fasta_MSF:virnet_wf:virnet (4)", "times": [{"starting_time": 1603721535721, "ending_time": 1603721535818, "color":c1(28)}, {"starting_time": 1603721535818, "ending_time": 1603721540857, "color":c2(28), "label": "5.8s \/ 1.2 GB"}, {"starting_time": 1603721540857, "ending_time": 1603721541499, "color":c1(28)}]},
+{"label": "identify_fasta_MSF:vibrant_virome_wf:vibrant_virome (1)", "times": [{"starting_time": 1603721541238, "ending_time": 1603721541336, "color":c1(33)}, {"starting_time": 1603721541336, "ending_time": 1603721885695, "color":c2(33), "label": "5m 50s \/ 802.9 MB"}, {"starting_time": 1603721885695, "ending_time": 1603721890758, "color":c1(33)}]},
+{"label": "identify_fasta_MSF:vibrant_wf:vibrant (1)", "times": [{"starting_time": 1603721541502, "ending_time": 1603721541599, "color":c1(34)}, {"starting_time": 1603721541599, "ending_time": 1603721849456, "color":c2(34), "label": "5m 9s \/ 933.5 MB"}, {"starting_time": 1603721849456, "ending_time": 1603721850135, "color":c1(34)}]},
+{"label": "identify_fasta_MSF:vibrant_wf:vibrant (3)", "times": [{"starting_time": 1603721850138, "ending_time": 1603721850235, "color":c1(34)}, {"starting_time": 1603721850235, "ending_time": 1603722085710, "color":c2(34), "label": "3m 56s \/ 835.3 MB"}, {"starting_time": 1603722085710, "ending_time": 1603722086382, "color":c1(34)}]},
+{"label": "identify_fasta_MSF:vibrant_wf:vibrant (2)", "times": [{"starting_time": 1603721890760, "ending_time": 1603721890859, "color":c1(34)}, {"starting_time": 1603721890859, "ending_time": 1603722112007, "color":c2(34), "label": "3m 47s \/ 935.2 MB"}, {"starting_time": 1603722112007, "ending_time": 1603722117541, "color":c1(34)}]},
+{"label": "identify_fasta_MSF:vibrant_virome_wf:vibrant_virome (3)", "times": [{"starting_time": 1603722086385, "ending_time": 1603722086482, "color":c1(33)}, {"starting_time": 1603722086482, "ending_time": 1603722295699, "color":c2(33), "label": "3m 31s \/ 952.8 MB"}, {"starting_time": 1603722295699, "ending_time": 1603722297605, "color":c1(33)}]},
+{"label": "identify_fasta_MSF:vibrant_wf:vibrant (5)", "times": [{"starting_time": 1603722117543, "ending_time": 1603722117641, "color":c1(34)}]},
+{"label": "identify_fasta_MSF:vibrant_virome_wf:vibrant_virome (2)", "times": [{"starting_time": 1603722214780, "ending_time": 1603722214878, "color":c1(33)}, {"starting_time": 1603722214878, "ending_time": 1603722501641, "color":c2(33), "label": "4m 48s \/ 818.2 MB"}, {"starting_time": 1603722501641, "ending_time": 1603722502364, "color":c1(33)}]},
+{"label": "identify_fasta_MSF:vibrant_virome_wf:vibrant_virome (4)", "times": [{"starting_time": 1603722297607, "ending_time": 1603722297705, "color":c1(33)}]},
+{"label": "identify_fasta_MSF:vibrant_virome_wf:vibrant_virome (8)", "times": []}
+]
+
+
+function getTickFormat() {
+  var MIN = 1000 * 60
+  var HOUR = MIN * 60
+  var DAY = HOUR * 24
+  var delta = (endingMillis - beginningMillis)
+
+  if( delta < 2 * MIN ) {
+    return {
+      format: d3.time.format("%S"),
+      tickTime: d3.time.seconds,
+      tickInterval: 5,
+      tickSize: 6
+    }
+  }
+
+  if( delta < 2 * HOUR ) {
+    return {
+      format: d3.time.format("%M"),
+      tickTime: d3.time.minutes,
+      tickInterval: 5,
+      tickSize: 6
+    }
+  }
+
+  if( delta < 2 * DAY ) {
+    return {
+      format: d3.time.format("%H:%M"),
+      tickTime: d3.time.hours,
+      tickInterval: 1,
+      tickSize: 6
+    }
+  }
+
+  if( delta <= 7 * DAY ) {
+    return {
+      format: d3.time.format("%b %e %H:%M"),
+      tickTime: d3.time.hours,
+      tickInterval: 6,
+      tickSize: 6
+    }
+  }
+
+  return {
+    format: d3.time.format("%b %e"),
+    tickTime: d3.time.days,
+    tickInterval: 1,
+    tickSize: 6
+  }
+}
+
+function getLabelMargin(scale) {
+    $('<span class="labelSpan" style="display: none"></span>').appendTo('body');
+
+    var labelMargin = 0
+    $.each(data, function (key, value) {
+      labelMargin = Math.max(labelMargin, $('.labelSpan').html(value.label).width());
+    });
+
+    $('.labelSpan').remove();
+
+    return (labelMargin * scale);
+}
+
+function render() {
+  handler=null;
+  $("#timeline").empty()
+  $('#label_elapsed').text(elapsed)
+  $('#label_launch').text( d3.time.format('%d %b %Y %H:%M')(new Date(beginningMillis)) )
+
+  var width = $(window).width();
+  var chart = d3.timeline()
+    .stack() // toggles graph stacking
+    .margin({left:getLabelMargin(0.85), right:100, top:0, bottom:0})
+    .tickFormat( getTickFormat() )
+    .rowSeperators('#f5f5f5')
+    .showTimeAxisTick()
+    ;
+  var svg = d3.select("#timeline").append("svg").attr("width", width).datum(data).call(chart);
+}
+
+function hrz() {
+if( handler != null ) clearTimeout(handler)
+  handler = setTimeout(render, 150);
+}
+
+$(document).ready(render)
+$(window).resize(hrz); // resize the applet on window resize
+</script>
+</head>
+
+<body>
+<div>
+  <h3>Processes execution timeline</h3>
+  <p>
+    Launch time: <span id='label_launch'> </span><br>
+    Elapsed time: <span id='label_elapsed'> </span><br>
+    Legend: job wall time / memory usage (RAM) <span id='label_legend'> </span>
+  </p>
+  <div id="timeline"></div>
+</div>
+
+<div id='footer'>
+  Created with Nextflow -- <a href='http://www.nextflow.io' target='_blank'>http://nextflow.io</a>
+</div>
+
+<script type="text/javascript">
+var prot = (("https:" == document.location.protocol) ? "https://" : "http://");
+document.write(unescape("%3Clink href='" + prot + "fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css' %3E%3C/link%3E"));
+</script>
+</body>
+</html>

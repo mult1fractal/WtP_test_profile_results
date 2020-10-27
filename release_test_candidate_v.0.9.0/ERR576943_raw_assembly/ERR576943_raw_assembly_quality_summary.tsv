@@ -1,0 +1,39 @@
+contig_id	contig_length	genome_copies	gene_count	viral_genes	host_genes	checkv_quality	miuvig_quality	completeness	completeness_method	contamination	provirus	termini	warnings
+NODE_104_length_1875_cov_3_075275	1875	1.0	1	0	0	Not-determined	Genome-fragment	NA	NA	0.0	No		'no viral genes detected'
+NODE_105_length_1852_cov_1_846411	1852	1.0	1	0	1	Not-determined	Genome-fragment	NA	NA	0.0	No		'no viral genes detected'
+NODE_107_length_1823_cov_4_029412	1823	1.0	1	0	0	Not-determined	Genome-fragment	NA	NA	0.0	No		'no viral genes detected'
+NODE_10_length_41715_cov_19114_961570	41715	1.0	67	52	0	Complete	High-quality	100.0	AAI-based	0.0	No	55-bp-DTR	
+NODE_112_length_1792_cov_6_251007	1792	1.0	1	0	0	Not-determined	Genome-fragment	NA	NA	0.0	No		'no viral genes detected'
+NODE_114_length_1755_cov_12_361765	1755	1.0	2	0	0	Not-determined	Genome-fragment	NA	NA	0.0	No		'no viral genes detected'
+NODE_117_length_1738_cov_1_994058	1738	1.0	5	0	4	Not-determined	Genome-fragment	NA	NA	0.0	No		'no viral genes detected'
+NODE_119_length_1728_cov_2_278542	1728	1.0	3	0	0	Not-determined	Genome-fragment	NA	NA	0.0	No		'no viral genes detected'
+NODE_121_length_1703_cov_1_655947	1703	1.0	0	0	0	Not-determined	Genome-fragment	NA	NA	0.0	No		'no viral genes detected'
+NODE_123_length_1700_cov_11_323404	1700	1.0	0	0	0	Not-determined	Genome-fragment	NA	NA	0.0	No		'no viral genes detected'
+NODE_124_length_1676_cov_5_787785	1676	1.0	1	1	0	Low-quality	Genome-fragment	20.2	AAI-based	0.0	No		
+NODE_128_length_1641_cov_2_025851	1641	1.0	1	0	0	Not-determined	Genome-fragment	NA	NA	0.0	No		'no viral genes detected'
+NODE_129_length_1638_cov_2_381554	1638	1.0	2	1	0	Low-quality	Genome-fragment	24.39	AAI-based	0.0	No		
+NODE_12_length_39183_cov_1419_559216	39183	1.0	50	46	0	High-quality	High-quality	97.89	AAI-based	0.0	No		
+NODE_130_length_1638_cov_1_633607	1638	1.0	1	0	0	Not-determined	Genome-fragment	NA	NA	0.0	No		'no viral genes detected'
+NODE_131_length_1619_cov_1_935422	1619	1.0	1	0	0	Not-determined	Genome-fragment	NA	NA	0.0	No		'no viral genes detected'
+NODE_13_length_37379_cov_1634_560444	37379	1.0	43	41	0	High-quality	High-quality	93.33	AAI-based	0.0	No		
+NODE_140_length_1519_cov_1_418716	1519	1.0	1	0	0	Not-determined	Genome-fragment	NA	NA	0.0	No		'no viral genes detected'
+NODE_142_length_1500_cov_2_953633	1500	1.0	0	0	0	Not-determined	Genome-fragment	NA	NA	0.0	No		'no viral genes detected'
+NODE_17_length_16354_cov_105_918277	16354	1.0	27	0	1	Not-determined	Genome-fragment	NA	NA	0.0	No	55-bp-DTR	'no viral genes detected'; 'predicted termini not supported by estimated completeness'
+NODE_19_length_12673_cov_4_947060	12673	1.0	8	0	0	Not-determined	Genome-fragment	NA	NA	0.0	No		'no viral genes detected'
+NODE_1_length_427293_cov_10_309364	427293	1.0	394	12	304	Not-determined	Genome-fragment	NA	NA	0.0	No		'microbial genes > viral genes'
+NODE_31_length_5441_cov_963_898440	5441	1.0	8	8	0	Medium-quality	Genome-fragment	89.52	AAI-based	0.0	No	55-bp-DTR	'predicted termini not supported by estimated completeness'
+NODE_3_length_109309_cov_6_864051	109309	1.0	103	33	37	Complete	High-quality	100.0	AAI-based	66.9	Yes	complete-prophage	'microbial genes > viral genes'; 'contig 3.1x length of matched reference'
+NODE_42_length_4005_cov_36_114177	4005	1.0	2	1	0	Medium-quality	Genome-fragment	67.01	AAI-based	0.0	No		
+NODE_45_length_3793_cov_7_104601	3793	1.0	1	1	0	Low-quality	Genome-fragment	45.69	AAI-based	0.0	No		
+NODE_46_length_3739_cov_2_418838	3739	1.0	4	0	0	Not-determined	Genome-fragment	NA	NA	0.0	No		'no viral genes detected'
+NODE_4_length_86579_cov_1360_818721	86579	1.0	138	31	1	Complete	High-quality	100.0	AAI-based	0.0	No	55-bp-DTR	
+NODE_53_length_3250_cov_3_454147	3250	1.0	1	0	0	Not-determined	Genome-fragment	NA	NA	0.0	No		'no viral genes detected'
+NODE_55_length_3172_cov_2_512031	3172	1.0	3	0	0	Not-determined	Genome-fragment	NA	NA	0.0	No		'no viral genes detected'
+NODE_62_length_2701_cov_2_069539	2701	1.0	1	0	0	Not-determined	Genome-fragment	NA	NA	0.0	No		'no viral genes detected'
+NODE_63_length_2694_cov_2_438424	2694	1.0	2	0	0	Not-determined	Genome-fragment	NA	NA	0.0	No		'no viral genes detected'
+NODE_66_length_2640_cov_2_577176	2640	1.0	3	0	0	Not-determined	Genome-fragment	NA	NA	0.0	No		'no viral genes detected'
+NODE_67_length_2618_cov_4_175185	2618	1.0	6	0	0	Not-determined	Genome-fragment	NA	NA	0.0	No		'no viral genes detected'
+NODE_69_length_2582_cov_4_122279	2582	1.0	3	0	0	Not-determined	Genome-fragment	NA	NA	0.0	No	55-bp-DTR	'no viral genes detected'; 'predicted termini not supported by estimated completeness'
+NODE_6_length_63443_cov_8_249543	63443	1.0	71	33	18	High-quality	High-quality	100.0	AAI-based	30.7	Yes		'contig 1.38x length of matched reference'
+NODE_82_length_2198_cov_1_818945	2198	1.0	5	0	5	Not-determined	Genome-fragment	NA	NA	0.0	No		'no viral genes detected'
+NODE_83_length_2127_cov_1_452220	2127	1.0	1	0	0	Not-determined	Genome-fragment	NA	NA	0.0	No		'no viral genes detected'
