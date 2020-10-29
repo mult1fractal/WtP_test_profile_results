@@ -1,0 +1,61 @@
+contig	prediction_value	predicted_organism_name
+NODE_101_length_2147_cov_1_959369	0	no match found 
+NODE_102_length_2113_cov_2_911565	0	no match found 
+NODE_103_length_2101_cov_2_202835	0	no match found 
+NODE_104_length_2075_cov_2_802475	0	no match found 
+NODE_106_length_2059_cov_9_261477	0	no match found 
+NODE_107_length_2054_cov_3_287644	0	no match found 
+NODE_10_length_39495_cov_1338_887500	0.87	gi|265524965|gb|GU071091.1|__Enterobacteria__phage__T7,__complete__genome 
+NODE_111_length_1985_cov_2_387047	0	no match found 
+NODE_112_length_1958_cov_2_496059	0	no match found 
+NODE_114_length_1942_cov_2_167992	0	no match found 
+NODE_117_length_1913_cov_2_861141	0	no match found 
+NODE_11_length_38368_cov_1521_300081	1.00	gi|505831697|gb|KC960671.1|__Enterobacteria__phage__T3,__complete__genome 
+NODE_120_length_1900_cov_3_965854	0	no match found 
+NODE_124_length_1854_cov_3_702613	0	no match found 
+NODE_131_length_1768_cov_1_539405	0	no match found 
+NODE_132_length_1767_cov_1_998832	0	no match found 
+NODE_133_length_1754_cov_2_746321	0	no match found 
+NODE_134_length_1743_cov_2_608412	0	no match found 
+NODE_136_length_1700_cov_9_333739	0	no match found 
+NODE_139_length_1632_cov_2_965758	0	no match found 
+NODE_140_length_1631_cov_4_999365	0	no match found 
+NODE_147_length_1569_cov_4_231176	0	no match found 
+NODE_148_length_1568_cov_2_972241	0	no match found 
+NODE_149_length_1567_cov_2_428571	0	no match found 
+NODE_14_length_16355_cov_102_695644	0	no match found 
+NODE_152_length_1556_cov_5_047302	0	no match found 
+NODE_156_length_1525_cov_6_995238	0	no match found 
+NODE_157_length_1525_cov_6_279592	0	no match found 
+NODE_158_length_1518_cov_2_447027	0	no match found 
+NODE_18_length_9101_cov_6_896087	0	no match found 
+NODE_1_length_427179_cov_9_205022	0	no match found 
+NODE_31_length_5441_cov_839_270887	1.00	gi|764044028|gb|CP004084.1|__Enterobacteria__phage__phiX174,__complete__genome 
+NODE_33_length_5078_cov_4_141947	0	no match found 
+NODE_35_length_4988_cov_5_949929	0	no match found 
+NODE_39_length_4557_cov_2_717903	0	no match found 
+NODE_40_length_4518_cov_9_768093	0	no match found 
+NODE_48_length_3899_cov_44_705515	0	no match found 
+NODE_49_length_3877_cov_3_173208	0	no match found 
+NODE_4_length_104302_cov_6_222942	0.33	mge:2095.1 Salmonella typhimurium LT2, complete genome. 
+NODE_58_length_3153_cov_2_197870	0	no match found 
+NODE_59_length_3112_cov_2_190056	0	no match found 
+NODE_5_length_86524_cov_1226_148319	0	no match found 
+NODE_61_length_3018_cov_3_222410	0	no match found 
+NODE_63_length_2896_cov_3_794791	0	no match found 
+NODE_64_length_2889_cov_5_148553	0	no match found 
+NODE_65_length_2885_cov_2_612721	0	no match found 
+NODE_67_length_2817_cov_2_645909	0	no match found 
+NODE_69_length_2778_cov_2_865957	0	no match found 
+NODE_6_length_63226_cov_7_495196	0.20	mge:2477.1 Salmonella enterica subsp. enterica serovar Choleraesuis str. SC-B67, complete genome. 
+NODE_73_length_2639_cov_11_164861	0	no match found 
+NODE_74_length_2612_cov_2_423543	0	no match found 
+NODE_75_length_2588_cov_5_864587	0	no match found 
+NODE_77_length_2561_cov_2_415802	0	no match found 
+NODE_83_length_2421_cov_3_707101	0	no match found 
+NODE_8_length_41715_cov_17349_167907	1.00	gi|169658842|dbj|AB426868.1|__Enterobacteria__phage__P22__DNA,__complete__genome,__strain:__ATCC__19585-B1 
+NODE_91_length_2247_cov_2_252281	0	no match found 
+NODE_92_length_2246_cov_5_473756	0	no match found 
+NODE_95_length_2201_cov_2_824324	0	no match found 
+NODE_96_length_2198_cov_2_119925	0	no match found 
+NODE_97_length_2171_cov_2_603970	0	no match found 
